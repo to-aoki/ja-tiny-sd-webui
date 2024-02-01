@@ -3,11 +3,11 @@
 run 
 ```
 pip install -r requirements.txt
-python3 app.py
+python app.py
 ```
 only CPU
 ```
-python3 app.py --cpu 
+python app.py --cpu 
 ```
 
 
