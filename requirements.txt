@@ -3,4 +3,4 @@ diffusers[torch]
 transformers
 huggingface_hub
 llama-cpp-python[gpu]
-# xformers
+xformers
