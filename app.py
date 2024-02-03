@@ -15,8 +15,10 @@
 # limitations under the License.
 
 import argparse
+import os.path
+
 import torch
-from diffusers import LCMScheduler, AutoPipelineForText2Image
+from diffusers import AutoPipelineForText2Image, LCMScheduler
 from llama_cpp import Llama
 import gradio as gr
 
@@ -35,10 +37,14 @@ parser.add_argument('--sd_adapter_name',
                     help='sd lora adaptor HF name')
 parser.add_argument('--cpu',
                     action='store_true',
-                    help='force use cpu.')
+                    help='force use cpu (intel).')
 parser.add_argument('--share',
                     action='store_true',
                     help='force use cpu.')
+parser.add_argument('--openvino_path',
+                    type=str,
+                    default=None,
+                    help='load openvio model filepath')
 
 args = parser.parse_args()
 
@@ -48,24 +54,41 @@ sd_adapter_name = args.sd_adapter_name
 
 use_cuda = torch.cuda.is_available() and not args.cpu
 
-pipe = AutoPipelineForText2Image.from_pretrained(
-    sd_model_name,
-    torch_dtype=torch.float16 if use_cuda else torch.float32,
-    variant="fp16"
-)
-pipe.scheduler = LCMScheduler.from_config(pipe.scheduler.config)
+width = 512
+height = 512
+num_inference_steps = 4
+guidance_scale = 1.0
 
-
-if use_cuda:
-    pipe.enable_xformers_memory_efficient_attention()
-    pipe.to("cuda")
+if args.cpu:
+    if args.openvino_path is None:
+        if not os.path.exists('./sd-1.5-lcm-openvino'):
+            from huggingface_hub import snapshot_download
+            download_folder = snapshot_download(repo_id="Intel/sd-1.5-lcm-openvino")
+            import shutil
+            shutil.copytree(download_folder, "./sd-1.5-lcm-openvino'")
+            args.openvino_path = './sd-1.5-lcm-openvino'
+        else:
+            args.openvino_path = './sd-1.5-lcm-openvino'
+    from openvino_pipe import LatentConsistencyEngine
+    pipe = LatentConsistencyEngine(
+        args.openvino_path
+    )
 else:
-    pipe.to("cpu")
+    pipe = AutoPipelineForText2Image.from_pretrained(
+        sd_model_name,
+        torch_dtype=torch.float16 if use_cuda else torch.float32,
+    )
+    pipe.scheduler = LCMScheduler.from_config(pipe.scheduler.config)
 
-if sd_adapter_name is not None:
-    pipe.load_lora_weights(sd_adapter_name)
     if use_cuda:
-        pipe.fuse_lora()
+        pipe.enable_xformers_memory_efficient_attention()
+        pipe.enable_model_cpu_offload()
+        pipe.to("cuda")
+
+    if sd_adapter_name is not None:
+        pipe.load_lora_weights(sd_adapter_name)
+        if use_cuda:
+            pipe.fuse_lora()
 
 if llm_model_path is None:
     from huggingface_hub import hf_hub_download
@@ -86,7 +109,11 @@ def ja2prompt(ja_prompt):
 
 
 def prompt2img(sd_prompt):
-    return pipe(sd_prompt, temp=0.0, num_inference_steps=4, guidance_scale=0).images[0]
+    return pipe(
+        sd_prompt,
+        num_inference_steps=num_inference_steps,
+        guidance_scale=1.0,
+    ).images[0]
 
 
 with gr.Blocks(title="tiny sd web-ui") as demo:

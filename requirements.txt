@@ -1,6 +1,12 @@
 gradio
-diffusers[torch]
 transformers
 huggingface_hub
-llama-cpp-python[gpu]
-xformers
+# for GPU
+# llama-cpp-python[gpu]
+# diffusers[torch]
+# xformers
+# for CPU
+optimum-intel
+openvino
+diffusers
+onnx
