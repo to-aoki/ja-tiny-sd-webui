@@ -70,8 +70,8 @@ if sd_adapter_name is not None:
 if llm_model_path is None:
     from huggingface_hub import hf_hub_download
     llm_model_path = hf_hub_download(
-        repo_id="taoki/llmjp-1.3B_staircaptions-FT",
-        filename="llmjp-1.3B_staircaptions+FT_Q4_K_S.gguf",
+        repo_id="taoki/llm-jp-1.3b-v1.0-staircaptions-FT",
+        filename="llm-jp-1.3b-v1.0_staircaptions-FT_Q4_K_S.gguf",
     )
 
 llm = Llama(
