@@ -1,9 +1,5 @@
 # japanese-translate-tiny-sd-webui
 
-日本語翻訳を試みて、おまけで単語羅列します（それらしいプロンプトを期待）。
-
-Attempts to translate Japanese input and continues with sloppy words as an extra.
-
 # Introduction
 I have developed an application that utilizes a decoder model to image generation prompts for StableDiffusion from any Japanese text string. The application translates a short Japanese text string into English, as shown in the figure below, and outputs a generation prompt that is not only natural but also suitable for continuous use in StableDiffusion's image generation.
 
@@ -60,6 +56,7 @@ Here is an example of the execution. Forward port 7860 and mount the directory w
 cd path_to_code_base
 git clone https://github.com/to-aoki/ja-tiny-sd-webui.git
 cd ja-tiny-sd-webui/docker
+sudo docker image build -t test-image:v1 .
 sudo docker run -it --runtime nvidia -p 7860:7860 -v path_to_code_base:path_to_code_base test-image:v1 /bin/bash
 ```
 
