@@ -3,10 +3,10 @@ diffusers[torch]
 transformers
 huggingface_hub
 # for GPU
-llama-cpp-python[gpu]
-xformers
+# llama-cpp-python[gpu]
+# xformers
 # for CPU
-#llama-cpp-python
-#optimum-intel
-#openvino
-#onnx
+llama-cpp-python
+optimum-intel
+openvino
+onnx
