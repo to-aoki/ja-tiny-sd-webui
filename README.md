@@ -11,6 +11,8 @@ This application learns the output of English translation strings and continuous
 
 ![figure.png](figure.png)
 
+[demo.webm](https://github.com/to-aoki/ja-tiny-sd-webui/assets/47078021/38677e7a-2c81-4546-b53e-f084d5692205)
+
 # Table of contents
  - [Requirements](#requirements)
  - [Files](#files)
@@ -144,7 +146,7 @@ python app.py --cpu
 [huggingface spaces](https://huggingface.co/spaces/taoki/tiny-ja-trans-sd) 2-bit quantization, the accuracy is poor.
 
 # References
- - [COCO](hhttps://cocodataset.org/)
+ - [COCO](https://cocodataset.org/)
  - [STAIR Captions](http://captions.stair.center/)
  - [UForm](https://github.com/unum-cloud/uform)
  - [llm-jp 1.3b](https://huggingface.co/llm-jp/llm-jp-1.3b-v1.0)
