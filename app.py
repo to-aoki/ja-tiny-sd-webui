@@ -82,7 +82,6 @@ else:
 
     if use_cuda:
         pipe.enable_xformers_memory_efficient_attention()
-        pipe.enable_model_cpu_offload()
         pipe.to("cuda")
 
     if sd_adapter_name is not None:
@@ -101,7 +100,6 @@ llm = Llama(
     model_path=llm_model_path,
     n_gpu_layers=25 if use_cuda else -1,
 )
-
 
 def ja2prompt(ja_prompt):
     response = llm(f"### Instruction:\n{ja_prompt}\n### Response:\n", max_tokens=128)
