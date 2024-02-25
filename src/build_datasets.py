@@ -14,6 +14,11 @@ dataset = DatasetDict({
     "train": train_dataset,
     "validation": val_dataset
 })
+
+# convert instruction
+dataset = dataset.rename_column("caption", "instruction")
+dataset = dataset.rename_column("prompt", "output")
+
 dataset.save_to_disk("stair-captions-prompts")
 dataset = load_dataset("stair-captions-prompts")
 print(dataset)
